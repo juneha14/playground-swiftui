@@ -11,9 +11,6 @@
 		CDABA0622A7D818200DD4C30 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA0612A7D818200DD4C30 /* ContentView.swift */; };
 		CDABA0642A7D818400DD4C30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDABA0632A7D818400DD4C30 /* Assets.xcassets */; };
 		CDABA0672A7D818400DD4C30 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDABA0662A7D818400DD4C30 /* Preview Assets.xcassets */; };
-		CDABA0712A7D818400DD4C30 /* playground_swiftuiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA0702A7D818400DD4C30 /* playground_swiftuiTests.swift */; };
-		CDABA07B2A7D818400DD4C30 /* playground_swiftuiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA07A2A7D818400DD4C30 /* playground_swiftuiUITests.swift */; };
-		CDABA07D2A7D818400DD4C30 /* playground_swiftuiUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA07C2A7D818400DD4C30 /* playground_swiftuiUITestsLaunchTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,10 +37,7 @@
 		CDABA0632A7D818400DD4C30 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CDABA0662A7D818400DD4C30 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CDABA06C2A7D818400DD4C30 /* playground-swiftuiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "playground-swiftuiTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CDABA0702A7D818400DD4C30 /* playground_swiftuiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = playground_swiftuiTests.swift; sourceTree = "<group>"; };
 		CDABA0762A7D818400DD4C30 /* playground-swiftuiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "playground-swiftuiUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CDABA07A2A7D818400DD4C30 /* playground_swiftuiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = playground_swiftuiUITests.swift; sourceTree = "<group>"; };
-		CDABA07C2A7D818400DD4C30 /* playground_swiftuiUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = playground_swiftuiUITestsLaunchTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,8 +69,6 @@
 			isa = PBXGroup;
 			children = (
 				CDABA05E2A7D818200DD4C30 /* playground-swiftui */,
-				CDABA06F2A7D818400DD4C30 /* playground-swiftuiTests */,
-				CDABA0792A7D818400DD4C30 /* playground-swiftuiUITests */,
 				CDABA05D2A7D818200DD4C30 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -108,23 +100,6 @@
 				CDABA0662A7D818400DD4C30 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		CDABA06F2A7D818400DD4C30 /* playground-swiftuiTests */ = {
-			isa = PBXGroup;
-			children = (
-				CDABA0702A7D818400DD4C30 /* playground_swiftuiTests.swift */,
-			);
-			path = "playground-swiftuiTests";
-			sourceTree = "<group>";
-		};
-		CDABA0792A7D818400DD4C30 /* playground-swiftuiUITests */ = {
-			isa = PBXGroup;
-			children = (
-				CDABA07A2A7D818400DD4C30 /* playground_swiftuiUITests.swift */,
-				CDABA07C2A7D818400DD4C30 /* playground_swiftuiUITestsLaunchTests.swift */,
-			);
-			path = "playground-swiftuiUITests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -266,7 +241,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDABA0712A7D818400DD4C30 /* playground_swiftuiTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,8 +248,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDABA07B2A7D818400DD4C30 /* playground_swiftuiUITests.swift in Sources */,
-				CDABA07D2A7D818400DD4C30 /* playground_swiftuiUITestsLaunchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
