@@ -11,6 +11,7 @@
 		CDABA0622A7D818200DD4C30 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA0612A7D818200DD4C30 /* ContentView.swift */; };
 		CDABA0642A7D818400DD4C30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDABA0632A7D818400DD4C30 /* Assets.xcassets */; };
 		CDABA0672A7D818400DD4C30 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDABA0662A7D818400DD4C30 /* Preview Assets.xcassets */; };
+		CDABA08E2A81749300DD4C30 /* ResultsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA08D2A81749300DD4C30 /* ResultsSummary.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		CDABA0662A7D818400DD4C30 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CDABA06C2A7D818400DD4C30 /* playground-swiftuiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "playground-swiftuiTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDABA0762A7D818400DD4C30 /* playground-swiftuiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "playground-swiftuiUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDABA08D2A81749300DD4C30 /* ResultsSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsSummary.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +88,7 @@
 		CDABA05E2A7D818200DD4C30 /* playground-swiftui */ = {
 			isa = PBXGroup;
 			children = (
+				CDABA0892A7DB6B300DD4C30 /* Views */,
 				CDABA05F2A7D818200DD4C30 /* playground_swiftuiApp.swift */,
 				CDABA0612A7D818200DD4C30 /* ContentView.swift */,
 				CDABA0632A7D818400DD4C30 /* Assets.xcassets */,
@@ -100,6 +103,14 @@
 				CDABA0662A7D818400DD4C30 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		CDABA0892A7DB6B300DD4C30 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CDABA08D2A81749300DD4C30 /* ResultsSummary.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -232,6 +243,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDABA08E2A81749300DD4C30 /* ResultsSummary.swift in Sources */,
 				CDABA0622A7D818200DD4C30 /* ContentView.swift in Sources */,
 				CDABA0602A7D818200DD4C30 /* playground_swiftuiApp.swift in Sources */,
 			);
