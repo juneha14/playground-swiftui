@@ -12,6 +12,7 @@
 		CDABA0642A7D818400DD4C30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDABA0632A7D818400DD4C30 /* Assets.xcassets */; };
 		CDABA0672A7D818400DD4C30 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDABA0662A7D818400DD4C30 /* Preview Assets.xcassets */; };
 		CDABA08E2A81749300DD4C30 /* ResultsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA08D2A81749300DD4C30 /* ResultsSummary.swift */; };
+		CDABA0902A81978700DD4C30 /* InteractiveRating.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA08F2A81978700DD4C30 /* InteractiveRating.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		CDABA06C2A7D818400DD4C30 /* playground-swiftuiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "playground-swiftuiTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDABA0762A7D818400DD4C30 /* playground-swiftuiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "playground-swiftuiUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDABA08D2A81749300DD4C30 /* ResultsSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsSummary.swift; sourceTree = "<group>"; };
+		CDABA08F2A81978700DD4C30 /* InteractiveRating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveRating.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				CDABA08D2A81749300DD4C30 /* ResultsSummary.swift */,
+				CDABA08F2A81978700DD4C30 /* InteractiveRating.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -244,6 +247,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CDABA08E2A81749300DD4C30 /* ResultsSummary.swift in Sources */,
+				CDABA0902A81978700DD4C30 /* InteractiveRating.swift in Sources */,
 				CDABA0622A7D818200DD4C30 /* ContentView.swift in Sources */,
 				CDABA0602A7D818200DD4C30 /* playground_swiftuiApp.swift in Sources */,
 			);
