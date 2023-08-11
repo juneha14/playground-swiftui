@@ -13,6 +13,7 @@
 		CDABA0672A7D818400DD4C30 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDABA0662A7D818400DD4C30 /* Preview Assets.xcassets */; };
 		CDABA08E2A81749300DD4C30 /* ResultsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA08D2A81749300DD4C30 /* ResultsSummary.swift */; };
 		CDABA0902A81978700DD4C30 /* InteractiveRating.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA08F2A81978700DD4C30 /* InteractiveRating.swift */; };
+		CDABA0922A84949300DD4C30 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA0912A84949300DD4C30 /* ProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +43,7 @@
 		CDABA0762A7D818400DD4C30 /* playground-swiftuiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "playground-swiftuiUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDABA08D2A81749300DD4C30 /* ResultsSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsSummary.swift; sourceTree = "<group>"; };
 		CDABA08F2A81978700DD4C30 /* InteractiveRating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveRating.swift; sourceTree = "<group>"; };
+		CDABA0912A84949300DD4C30 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 			children = (
 				CDABA08D2A81749300DD4C30 /* ResultsSummary.swift */,
 				CDABA08F2A81978700DD4C30 /* InteractiveRating.swift */,
+				CDABA0912A84949300DD4C30 /* ProfileView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 			files = (
 				CDABA08E2A81749300DD4C30 /* ResultsSummary.swift in Sources */,
 				CDABA0902A81978700DD4C30 /* InteractiveRating.swift in Sources */,
+				CDABA0922A84949300DD4C30 /* ProfileView.swift in Sources */,
 				CDABA0622A7D818200DD4C30 /* ContentView.swift in Sources */,
 				CDABA0602A7D818200DD4C30 /* playground_swiftuiApp.swift in Sources */,
 			);
