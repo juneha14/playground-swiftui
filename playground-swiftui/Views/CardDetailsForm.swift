@@ -8,10 +8,19 @@
 import SwiftUI
 
 struct CardDetailsForm: View {
-    @State private var name = ""
+    private struct CardDetails: Identifiable {
+        let id = UUID()
+        var name: String
+        var cardNumber: String
+        var expiryMonth: String
+        var expiryYear: String
+        var cvv: String
+    }
+    
+    @State private var details = CardDetails(name: "", cardNumber: "", expiryMonth: "", expiryYear: "", cvv: "")
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 Group {
                     // Header
@@ -25,9 +34,14 @@ struct CardDetailsForm: View {
                                 .offset(y: offsetY > 0 ? -offsetY : 0)
                         }
                         .frame(height: 300)
-                        BackCard()
+                        
+                        BackCard(cvv: details.cvv)
                             .offset(x: 30, y: 20)
-                        FrontCard()
+                        
+                        FrontCard(cardNumber: details.cardNumber,
+                                  name: details.name,
+                                  expiryMonth: details.expiryMonth,
+                                  expiryYear: details.expiryYear)
                             .offset(x: -30, y: 120)
                     }
                     
@@ -37,30 +51,11 @@ struct CardDetailsForm: View {
                         Spacer()
                         Spacer()
                         
-                        CardFormTextField(title: "Cardholder name",
-                                          placeholder: "e.g. Jane Appleseed",
-                                          value: $name,
-                                          keyboardType: .default
-                        )
-                        CardFormTextField(title: "Card number",
-                                          placeholder: "e.g. 1234 5678 9123 0000",
-                                          value: $name,
-                                          keyboardType: .numberPad
-                        )
+                        CardFormTextField(inputType: .name($details.name))
+                        CardFormTextField(inputType: .cardNumber($details.cardNumber))
                         HStack(spacing: 24) {
-                            CardFormTextField(title: "Expiry date (MM/YY)",
-                                              placeholder: "MM",
-                                              value: $name,
-                                              keyboardType: .numberPad,
-                                              secondaryPlaceholder: "YY",
-                                              secondaryValue: $name,
-                                              isDouble: true
-                            )
-                            CardFormTextField(title: "CVC",
-                                              placeholder: "e.g. 123",
-                                              value: $name,
-                                              keyboardType: .numberPad
-                            )
+                            CardFormTextField(inputType: .expiry(month: $details.expiryMonth, year: $details.expiryYear))
+                            CardFormTextField(inputType: .cvv($details.cvv))
                         }
                         
                         Spacer()
@@ -94,42 +89,75 @@ struct CardDetailsForm: View {
 }
 
 struct CardFormTextField: View {
-    let title: String
-    let placeholder: String
-    let value: Binding<String>
-    let keyboardType: UIKeyboardType
-    let secondaryPlaceholder: String?
-    let secondaryValue: Binding<String>?
-    let isDouble: Bool
-    
-    init(title: String, placeholder: String, value: Binding<String>, keyboardType: UIKeyboardType, secondaryPlaceholder: String? = nil, secondaryValue: Binding<String>? = nil, isDouble: Bool = false) {
-        self.title = title
-        self.placeholder = placeholder
-        self.value = value
-        self.keyboardType = keyboardType
-        self.secondaryPlaceholder = secondaryPlaceholder
-        self.secondaryValue = secondaryValue
-        self.isDouble = isDouble
+    enum InputType {
+        case name(Binding<String>)
+        case cardNumber(Binding<String>)
+        case expiry(month: Binding<String>, year: Binding<String>)
+        case cvv(Binding<String>)
+        
+        var title: String {
+            switch self {
+            case .name: return "Cardholder name"
+            case .cardNumber: return "Card number"
+            case .expiry: return "Expiry date (MM/YY)"
+            case .cvv: return "CVV"
+            }
+        }
+        
+        var placeholder: String {
+            switch self {
+            case .name: return "e.g. Jane Appleseed"
+            case .cardNumber: return "e.g 1234 5678 9123 0000"
+            case .expiry: return "MM YY"
+            case .cvv: return "CVV"
+            }
+        }
+        
+        var keyboardType: UIKeyboardType {
+            switch self {
+            case .name: return .default
+            case .cardNumber, .expiry, .cvv: return .numberPad
+            }
+        }
+        
+        var bindingValue: (Binding<String>, Binding<String>?) {
+            get {
+                switch self {
+                case .name(let name): return (name, nil)
+                case .cardNumber(let number): return (number, nil)
+                case .expiry(let month, let year): return (month, year)
+                case .cvv(let cvv): return (cvv, nil)
+                }
+            }
+            set {
+                switch self {
+                case .name: self = .name(newValue.0)
+                case .cardNumber: self = .cardNumber(newValue.0)
+                case .expiry: self = .expiry(month: newValue.0, year: newValue.1!)
+                case .cvv: self = .cvv(newValue.0)
+                }
+            }
+        }
+        
     }
+    let inputType: InputType
    
     var body: some View {
         VStack(alignment: .leading) {
-            Text(title)
+            Text(inputType.title)
                 .font(.caption)
                 .foregroundColor(.black)
                 .textCase(.uppercase)
             HStack {
-                TextField(placeholder, text: value)
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(.gray).opacity(0.2))
-                    .keyboardType(keyboardType)
-                
-                if isDouble == true, let secondaryPlaceholder = secondaryPlaceholder, let secondaryValue = secondaryValue {
-                    TextField(secondaryPlaceholder, text: secondaryValue)
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(.gray).opacity(0.2))
+                if case .expiry(let bindingMonth, let bindingYear) = inputType {
+                    let placeholder = inputType.placeholder.split(separator: " ")
+                    TextField(placeholder[0], text: bindingMonth)
+                        .modifier(FormTextModifier(keyboardType: inputType.keyboardType))
+                    TextField(placeholder[1], text: bindingYear)
+                        .modifier(FormTextModifier(keyboardType: inputType.keyboardType))
+                } else {
+                    TextField(inputType.placeholder, text: inputType.bindingValue.0)
+                        .modifier(FormTextModifier(keyboardType: inputType.keyboardType))
                 }
             }
         }
@@ -137,7 +165,24 @@ struct CardFormTextField: View {
     }
 }
 
+struct FormTextModifier: ViewModifier {
+    let keyboardType: UIKeyboardType
+    
+    func body(content: Content) -> some View {
+        content
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(.gray).opacity(0.2))
+            .keyboardType(keyboardType)
+    }
+}
+
 struct FrontCard: View {
+    let cardNumber: String
+    let name: String
+    let expiryMonth: String
+    let expiryYear: String
+    
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -151,13 +196,13 @@ struct FrontCard: View {
             
             Spacer()
             Group {
-                Text("0000 0000 0000 0000 0000")
+                Text(cardNumber.isEmpty ? "0000 0000 0000 0000" : cardNumber)
                     .bold()
                     .font(.callout)
                 HStack {
-                    Text("Jane Appleseed")
+                    Text(name.isEmpty ? "Jane Appleseed" : name)
                     Spacer()
-                    Text("00/00")
+                    Text(expiryMonth.isEmpty || expiryYear.isEmpty ? "00/00" : "\(expiryMonth)/\(expiryYear)")
                 }
                 .font(.caption)
                 .padding(.vertical, 1)
@@ -177,6 +222,8 @@ struct FrontCard: View {
 }
 
 struct BackCard: View {
+    let cvv: String
+    
     var body: some View {
         ZStack(alignment: .trailing) {
             Image("bg-card-back")
@@ -186,7 +233,7 @@ struct BackCard: View {
                 .clipped()
                 .cornerRadius(8)
             
-            Text("000")
+            Text(cvv.isEmpty ? "000" : cvv)
                 .font(.caption)
                 .foregroundColor(.white)
                 .offset(x: -20)
