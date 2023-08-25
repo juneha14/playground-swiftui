@@ -7,8 +7,10 @@
 
 import SwiftUI
 
+// Navigate to new page when submitted form
+
 struct CardDetailsForm: View {
-    private struct CardDetails: Identifiable {
+    struct CardDetails: Identifiable {
         let id = UUID()
         var name: String
         var cardNumber: String
@@ -18,6 +20,14 @@ struct CardDetailsForm: View {
     }
     
     @State private var details = CardDetails(name: "", cardNumber: "", expiryMonth: "", expiryYear: "", cvv: "")
+    
+    private var submitButtonEnabled: Bool {
+        return !details.name.isEmpty &&
+        !details.cardNumber.isEmpty &&
+        !details.expiryMonth.isEmpty &&
+        !details.expiryYear.isEmpty &&
+        !details.cvv.isEmpty
+    }
     
     var body: some View {
         NavigationStack {
@@ -74,6 +84,7 @@ struct CardDetailsForm: View {
                                     .cornerRadius(8)
                             }
                             .buttonStyle(.plain) // Makes only the button clickable and not the entire row
+                            .disabled(!submitButtonEnabled)
                         }
                     }
                     .padding(.horizontal)
@@ -107,7 +118,7 @@ struct CardFormTextField: View {
         var placeholder: String {
             switch self {
             case .name: return "e.g. Jane Appleseed"
-            case .cardNumber: return "e.g 1234 5678 9123 0000"
+            case .cardNumber: return "e.g. 1234 5678 9123 0000"
             case .expiry: return "MM YY"
             case .cvv: return "CVV"
             }
@@ -138,8 +149,8 @@ struct CardFormTextField: View {
                 }
             }
         }
-        
     }
+    
     let inputType: InputType
    
     var body: some View {
@@ -153,15 +164,55 @@ struct CardFormTextField: View {
                     let placeholder = inputType.placeholder.split(separator: " ")
                     TextField(placeholder[0], text: bindingMonth)
                         .modifier(FormTextModifier(keyboardType: inputType.keyboardType))
+                        .modifier(FormValidatorModifier(inputType: inputType))
                     TextField(placeholder[1], text: bindingYear)
                         .modifier(FormTextModifier(keyboardType: inputType.keyboardType))
+                        .modifier(FormValidatorModifier(inputType: inputType))
                 } else {
                     TextField(inputType.placeholder, text: inputType.bindingValue.0)
                         .modifier(FormTextModifier(keyboardType: inputType.keyboardType))
+                        .modifier(FormValidatorModifier(inputType: inputType))
                 }
             }
         }
         .padding(.top)
+    }
+}
+
+struct FormValidatorModifier: ViewModifier {
+    let inputType: CardFormTextField.InputType
+    
+    @FocusState private var isFocused: Bool
+    @State private var showErrorMessage = false
+    
+    func isValid() -> Bool {
+        switch inputType {
+        case .name(let name):
+            return !name.wrappedValue.isEmpty
+        case .cardNumber(let number):
+            return number.wrappedValue.count == 16
+        case .expiry(let month, let year):
+            return month.wrappedValue.count == 2 && year.wrappedValue.count == 2
+        case .cvv(let cvv):
+            return cvv.wrappedValue.count == 3
+        }
+    }
+    
+    func body(content: Content) -> some View {
+        VStack(alignment: .leading) {
+            content
+                .focused($isFocused)
+                .onChange(of: isFocused) { newValue in
+                    if !newValue {
+                        showErrorMessage = !isValid()
+                    }
+                }
+            Text(showErrorMessage ? "Incorrect!" : " ") // Empty string hack so that the view doesn't move up and down
+                .bold()
+                .font(.caption)
+                .foregroundColor(.red)
+                .padding(.horizontal, 1)
+        }
     }
 }
 
@@ -202,7 +253,7 @@ struct FrontCard: View {
                 HStack {
                     Text(name.isEmpty ? "Jane Appleseed" : name)
                     Spacer()
-                    Text(expiryMonth.isEmpty || expiryYear.isEmpty ? "00/00" : "\(expiryMonth)/\(expiryYear)")
+                    Text(expiryMonth.isEmpty && expiryYear.isEmpty ? "00/00" : "\(expiryMonth)/\(expiryYear)")
                 }
                 .font(.caption)
                 .padding(.vertical, 1)
