@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-// Navigate to new page when submitted form
-
 struct CardDetailsForm: View {
     struct CardDetails: Identifiable {
         let id = UUID()
@@ -23,10 +21,10 @@ struct CardDetailsForm: View {
     
     private var submitButtonEnabled: Bool {
         return !details.name.isEmpty &&
-        !details.cardNumber.isEmpty &&
-        !details.expiryMonth.isEmpty &&
-        !details.expiryYear.isEmpty &&
-        !details.cvv.isEmpty
+        details.cardNumber.count == 16 &&
+        details.expiryMonth.count == 2 &&
+        details.expiryYear.count == 2 &&
+        details.cvv.count == 3
     }
     
     var body: some View {
@@ -70,22 +68,23 @@ struct CardDetailsForm: View {
                         
                         Spacer()
                         
-                        // Confirm button
-                        VStack {
-                            Button {
-                                print("confirmed!")
-                            } label: {
-                                Text("Confirm")
-                                    .foregroundColor(.white)
-                                    .bold()
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(.blue)
-                                    .cornerRadius(8)
-                            }
-                            .buttonStyle(.plain) // Makes only the button clickable and not the entire row
-                            .disabled(!submitButtonEnabled)
-                        }
+                        // Confirm button that navigates to the success screen
+                        // There's currently a bug where tapping on a row in a List causes the entire row to be clickable
+                        Text("Confirm")
+                            .foregroundColor(.white)
+                            .bold()
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(submitButtonEnabled ? .blue : .secondary)
+                            .cornerRadius(8)
+                            .overlay(
+                                NavigationLink("", destination: {
+                                    // Thank you success screen
+                                    ConfirmSuccess()
+                                })
+                                .disabled(!submitButtonEnabled)
+                                .opacity(0) // Hack to hide the disclosure indicator
+                            )
                     }
                     .padding(.horizontal)
                     .zIndex(-1) // Place it behind the header
@@ -198,18 +197,39 @@ struct FormValidatorModifier: ViewModifier {
         }
     }
     
+    func isEmpty() -> Bool {
+        switch inputType {
+        case .name(let name):
+            return name.wrappedValue.isEmpty
+        case .cardNumber(let number):
+            return number.wrappedValue.isEmpty
+        case .expiry(let month, let year):
+            return month.wrappedValue.isEmpty || year.wrappedValue.isEmpty
+        case .cvv(let cvv):
+            return cvv.wrappedValue.isEmpty
+        }
+    }
+    
     func body(content: Content) -> some View {
         VStack(alignment: .leading) {
             content
                 .focused($isFocused)
                 .onChange(of: isFocused) { newValue in
-                    if !newValue {
+                    if !newValue && !isEmpty() {
                         showErrorMessage = !isValid()
                     }
                 }
+                .onChange(of: inputType.bindingValue.0.wrappedValue) { newValue in
+                    // Whenever text is updated by the user, remove the error message
+                    showErrorMessage = false
+                }
+                .onChange(of: inputType.bindingValue.1?.wrappedValue) { newValue in
+                    showErrorMessage = false
+                }
+            
             Text(showErrorMessage ? "Incorrect!" : " ") // Empty string hack so that the view doesn't move up and down
                 .bold()
-                .font(.caption)
+                .font(.caption2)
                 .foregroundColor(.red)
                 .padding(.horizontal, 1)
         }
@@ -288,6 +308,39 @@ struct BackCard: View {
                 .font(.caption)
                 .foregroundColor(.white)
                 .offset(x: -20)
+        }
+    }
+}
+
+struct ConfirmSuccess: View {
+    var body: some View {
+        NavigationStack {
+            VStack {
+                Image("bg-card-front")
+                    .resizable()
+                    .frame(width: 100, height: 100)
+                    .scaledToFill()
+                    .clipShape(Circle())
+                    .overlay(
+                        Image(systemName: "checkmark")
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(.white)
+                    )
+                    .padding(.bottom, 50)
+                
+                Text("Thank you!")
+                    .textCase(.uppercase)
+                    .font(.title)
+                    .bold()
+                    .foregroundColor(.primary)
+                    .padding(.vertical)
+                
+                Text("We've added your card details")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+            }
+            .toolbarRole(.editor)
         }
     }
 }
