@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CD57F0772A95B0D800699E7B /* CardDetailsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD57F0762A95B0D800699E7B /* CardDetailsForm.swift */; };
+		CD57F0792A9D1AD400699E7B /* InteractivePricing.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD57F0782A9D1AD400699E7B /* InteractivePricing.swift */; };
 		CDABA0602A7D818200DD4C30 /* playground_swiftuiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA05F2A7D818200DD4C30 /* playground_swiftuiApp.swift */; };
 		CDABA0622A7D818200DD4C30 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA0612A7D818200DD4C30 /* ContentView.swift */; };
 		CDABA0642A7D818400DD4C30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDABA0632A7D818400DD4C30 /* Assets.xcassets */; };
@@ -37,6 +38,7 @@
 
 /* Begin PBXFileReference section */
 		CD57F0762A95B0D800699E7B /* CardDetailsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetailsForm.swift; sourceTree = "<group>"; };
+		CD57F0782A9D1AD400699E7B /* InteractivePricing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePricing.swift; sourceTree = "<group>"; };
 		CDABA05C2A7D818200DD4C30 /* playground-swiftui.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "playground-swiftui.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDABA05F2A7D818200DD4C30 /* playground_swiftuiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = playground_swiftuiApp.swift; sourceTree = "<group>"; };
 		CDABA0612A7D818200DD4C30 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				CDABA0912A84949300DD4C30 /* ProfileView.swift */,
 				CDABA0932A94434800DD4C30 /* NotificationsView.swift */,
 				CD57F0762A95B0D800699E7B /* CardDetailsForm.swift */,
+				CD57F0782A9D1AD400699E7B /* InteractivePricing.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -260,6 +263,7 @@
 				CDABA0922A84949300DD4C30 /* ProfileView.swift in Sources */,
 				CDABA0622A7D818200DD4C30 /* ContentView.swift in Sources */,
 				CD57F0772A95B0D800699E7B /* CardDetailsForm.swift in Sources */,
+				CD57F0792A9D1AD400699E7B /* InteractivePricing.swift in Sources */,
 				CDABA0602A7D818200DD4C30 /* playground_swiftuiApp.swift in Sources */,
 				CDABA0942A94434800DD4C30 /* NotificationsView.swift in Sources */,
 			);
