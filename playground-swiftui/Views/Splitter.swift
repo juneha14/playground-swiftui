@@ -8,10 +8,6 @@
 import SwiftUI
 
 struct Splitter: View {
-    
-    @State private var billAmount = ""
-    @State private var numberOfPeople = ""
-    
     init() {
         // Change the color of the navigation title
         // Currently, there's no way to do this using a modifier in SwiftUI
@@ -19,6 +15,32 @@ struct Splitter: View {
         let navBarAppearance = UINavigationBar.appearance()
         navBarAppearance.largeTitleTextAttributes = [.foregroundColor: color]
         navBarAppearance.titleTextAttributes = [.foregroundColor: color]
+    }
+    
+    @State private var billAmount = ""
+    @State private var numberOfPeople = ""
+    @State private var tip: Tip?
+    @State private var tipType: TipType = .custom(amount: 0)
+    
+    private var tipAmountPerPerson: Double {
+        guard let bill = Double(billAmount), let numPeople = Double(numberOfPeople) else {
+            return 0
+        }
+        
+        switch tipType {
+        case .percentage(let amount):
+            return bill * amount / numPeople
+        case .custom(let amount):
+            return amount / numPeople
+        }
+    }
+    
+    private var totalAmountPerPerson: Double {
+        guard let bill = Double(billAmount), let numPeople = Double(numberOfPeople) else {
+            return 0
+        }
+        
+        return (bill + tipAmountPerPerson) / numPeople
     }
     
     var body: some View {
@@ -30,7 +52,7 @@ struct Splitter: View {
                     }
                     
                     SectionContent(title: "Select Tip %") {
-                        TipOptions()
+                        TipOptions(selectedTip: $tip, selectedTipType: $tipType)
                     }
                     
                     SectionContent(title: "Number of People") {
@@ -38,10 +60,14 @@ struct Splitter: View {
                     }
                     
                     VStack {
-                        ResultAmount(title: "Tip Amount", amount: "$0.00")
-                        ResultAmount(title: "Total", amount: "$0.00")
+                        ResultAmount(title: "Tip Amount", amount: tipAmountPerPerson)
+                        ResultAmount(title: "Total", amount: totalAmountPerPerson)
                         Button {
-                            print("pressed")
+                            // Reset everything
+                            billAmount = ""
+                            numberOfPeople = ""
+                            tip = nil
+                            tipType = .custom(amount: 0)
                         } label: {
                             Text("RESET")
                                 .bold()
@@ -67,25 +93,20 @@ struct Splitter: View {
 }
 
 struct TipOptions: View {
-    enum Tips: String, CaseIterable {
-        case five = "5%"
-        case ten = "10%"
-        case fifteen = "15%"
-        case twentyFive = "25%"
-        case fifty = "50%"
-        case custom = "Custom"
-    }
+    @Binding var selectedTip: Tip?
+    @Binding var selectedTipType: TipType
+    
+    @State private var customTip = ""
+    @FocusState private var isCustomTipFieldFocused: Bool
     
     private let columns = [
         GridItem(.flexible()),
         GridItem(.flexible()),
     ]
     
-    @State private var customTip = ""
-    
     var body: some View {
         LazyVGrid(columns: columns, alignment: .leading) {
-            ForEach(Tips.allCases, id: \.rawValue) { tip in
+            ForEach(Tip.allCases, id: \.rawValue) { tip in
                 if case .custom = tip {
                     TextField(tip.rawValue, text: $customTip)
                         .multilineTextAlignment(.center)
@@ -95,16 +116,31 @@ struct TipOptions: View {
                         .padding(.vertical, 15)
                         .background(Theme.veryLightGrayGreen)
                         .cornerRadius(8)
+                        .focused($isCustomTipFieldFocused)
+                        .onTapGesture {
+                            selectedTip = .custom
+                        }
+                        .onChange(of: customTip) { newValue in
+                            if selectedTip == .custom {
+                                selectedTipType = .custom(amount: Double(newValue) ?? 0)
+                            }
+                        }
+                        .onChange(of: selectedTip) { newValue in
+                            // Reset custom text field
+                            customTip = ""
+                            isCustomTipFieldFocused = false
+                        }
                 } else {
                     Button {
-                        //
+                        selectedTip = tip
+                        selectedTipType = .percentage(amount: tip.percentage)
                     } label: {
                         Text(tip.rawValue)
                             .font(.headline)
-                            .foregroundColor(.white)
+                            .foregroundColor(selectedTip == tip ? Theme.veryDarkGreen : .white)
                             .frame(width: 140)
                             .padding()
-                            .background(Theme.veryDarkGreen)
+                            .background(selectedTip == tip ? Theme.cyan : Theme.veryDarkGreen)
                             .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
@@ -114,32 +150,13 @@ struct TipOptions: View {
     }
 }
 
-struct Tip: View {
-    let amount: String
-    
-    var body: some View {
-        Button {
-            //
-        } label: {
-            Text(amount)
-                .font(.headline)
-                .foregroundColor(.white)
-                .frame(width: 140)
-                .padding()
-                .background(Theme.veryDarkGreen)
-                .cornerRadius(8)
-        }
-        .buttonStyle(.plain)
-    }
-}
-
 struct ResultAmount: View {
     let title: String
-    let amount: String
+    let amount: Double
     
     var body: some View {
         LabeledContent {
-            Text(amount)
+            Text(amount.formatted(.currency(code: "USD")))
                 .bold()
                 .font(.title)
                 .foregroundColor(Theme.cyan)
@@ -192,6 +209,35 @@ struct SectionContent<Content: View>: View {
         }
     }
 }
+
+// MARK: - Models
+
+enum Tip: String, CaseIterable {
+    case five = "5%"
+    case ten = "10%"
+    case fifteen = "15%"
+    case twentyFive = "25%"
+    case fifty = "50%"
+    case custom = "Custom"
+    
+    var percentage: Double {
+        switch self {
+        case .five: return 0.05
+        case .ten: return 0.1
+        case .fifteen: return 0.15
+        case .twentyFive: return 0.25
+        case .fifty: return 0.50
+        case .custom: return 0.00
+        }
+    }
+}
+
+enum TipType {
+    case percentage(amount: Double)
+    case custom(amount: Double)
+}
+
+// MARK: - Theme
 
 fileprivate struct Theme {
     static let veryDarkGreen = Color(red: 0/255, green: 73/255, blue: 77/255)
