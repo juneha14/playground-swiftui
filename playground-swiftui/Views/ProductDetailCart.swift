@@ -22,6 +22,56 @@ struct ProductDetailCart: View {
     }
 }
 
+struct Cart: View {
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    LabeledContent {
+                        Image(systemName: "trash")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                    } label: {
+                        HStack(alignment: .top) {
+                            Image("shoe1")
+                                .resizable()
+                                .frame(width: 70, height: 70)
+                                .cornerRadius(8)
+                            
+                            VStack(alignment: .leading) {
+                                Text("Fall Limited Edition Sneakers")
+                                Text("$125.00")
+                                Spacer()
+                                Text("Quantity: 3")
+                                    .font(.caption)
+                            }
+                            .frame(maxHeight: 70)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        }
+                    }
+                    
+                }
+                .listRowSeparator(.hidden)
+                
+                Section {
+                    Text("Checkout")
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.white)
+                        .bold()
+                        .padding()
+                        .background(Theme.orange)
+                        .cornerRadius(8)
+                }
+                .padding(.top)
+                .listRowSeparator(.hidden)
+            }
+            .listStyle(.plain)
+            .navigationTitle("Cart")
+        }
+    }
+}
+
 struct ProductDetails: View {
     private let productImageIds = [
         "shoe1",
@@ -154,12 +204,6 @@ struct ProductDetails: View {
             .padding(.horizontal)
         }
         .edgesIgnoringSafeArea(.top)
-    }
-}
-
-struct Cart: View {
-    var body: some View {
-        Text("Cart")
     }
 }
 
