@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct ProductDetailCart: View {
+    @StateObject var cart = Cart()
+    
     var body: some View {
         TabView {
-            ProductDetails()
+            ProductDetailsView(cart: cart)
                 .tabItem {
                     Label("Product", systemImage: "house")
                 }
-            Cart()
+            CartView(cart: cart)
                 .tabItem {
                     Label("Cart", systemImage: "cart")
                 }
@@ -22,57 +24,99 @@ struct ProductDetailCart: View {
     }
 }
 
-struct Cart: View {
+struct CartView: View {
+    @ObservedObject var cart: Cart
+    
+    private func deleteProductFromCart(id: UUID) {
+        cart.deleteItem(for: id)
+    }
+    
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    LabeledContent {
-                        Image(systemName: "trash")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                    } label: {
-                        HStack(alignment: .top) {
-                            Image("shoe1")
-                                .resizable()
-                                .frame(width: 70, height: 70)
-                                .cornerRadius(8)
-                            
-                            VStack(alignment: .leading) {
-                                Text("Fall Limited Edition Sneakers")
-                                Text("$125.00")
-                                Spacer()
-                                Text("Quantity: 3")
-                                    .font(.caption)
+            if cart.items.isEmpty {
+                Text("Your cart is empty")
+                    .font(.title)
+                    .foregroundColor(.secondary)
+                    .navigationTitle("Cart")
+            } else {
+                List {
+                    Section {
+                        ForEach(cart.items) { item in
+                            CartItemRow(item: item) { id in
+                                deleteProductFromCart(id: id)
                             }
-                            .frame(maxHeight: 70)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
                         }
                     }
+                    .listRowSeparator(.hidden)
                     
+                    if !cart.items.isEmpty {
+                        Section {
+                            Text("Checkout")
+                                .frame(maxWidth: .infinity)
+                                .foregroundColor(.white)
+                                .bold()
+                                .padding()
+                                .background(Theme.orange)
+                                .cornerRadius(8)
+                        }
+                        .padding(.top)
+                        .listRowSeparator(.hidden)
+                    }
                 }
-                .listRowSeparator(.hidden)
-                
-                Section {
-                    Text("Checkout")
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
-                        .bold()
-                        .padding()
-                        .background(Theme.orange)
-                        .cornerRadius(8)
-                }
-                .padding(.top)
-                .listRowSeparator(.hidden)
+                .listStyle(.plain)
+                .navigationTitle("Cart")
             }
-            .listStyle(.plain)
-            .navigationTitle("Cart")
         }
     }
 }
 
-struct ProductDetails: View {
+struct CartItemRow: View {
+    let item: CartItem
+    let deleteProductFromCart: (UUID) -> Void
+    
+    var body: some View {
+        LabeledContent {
+            Image(systemName: "trash")
+                .resizable()
+                .frame(width: 20, height: 20)
+                .overlay(
+                    Button("", action: {
+                        deleteProductFromCart(item.id)
+                    })
+                )
+        } label: {
+            HStack(alignment: .top) {
+                Image(item.thumbnailImageId)
+                    .resizable()
+                    .frame(width: 70, height: 70)
+                    .cornerRadius(8)
+                
+                VStack(alignment: .leading) {
+                    Text(item.title)
+                    Text(item.price)
+                    Spacer()
+                    Text("Quantity: \(item.quantity)")
+                        .font(.caption)
+                }
+                .frame(maxHeight: 70)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            }
+        }
+        .swipeActions(edge: .trailing) {
+            Button {
+                deleteProductFromCart(item.id)
+            } label: {
+                Image(systemName: "trash")
+            }
+            .tint(.red)
+        }
+    }
+}
+
+struct ProductDetailsView: View {
+    @ObservedObject var cart: Cart
+    
     private let productImageIds = [
         "shoe1",
         "shoe2",
@@ -82,6 +126,7 @@ struct ProductDetails: View {
     
     @State private var quantity = 0
     @State private var selectedPageIndex: Array.Index = 0
+    @State private var addToCartSuccess = false
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -187,7 +232,11 @@ struct ProductDetails: View {
                 .cornerRadius(8)
                 
                 Button {
-                    //
+                    cart.add(item: CartItem(thumbnailImageId: "shoe1",
+                                            title: "Fall Limited Edition Sneakers",
+                                            price: "$125.00",
+                                            quantity: quantity))
+                    addToCartSuccess.toggle()
                 } label: {
                     Label("Add to cart", systemImage: "cart")
                         .font(.subheadline)
@@ -200,6 +249,8 @@ struct ProductDetails: View {
                 }
                 .buttonStyle(.plain)
                 .padding(.vertical)
+                .disabled(quantity == 0)
+                .alert("Item added to cart!", isPresented: $addToCartSuccess, actions: {})
             }
             .padding(.horizontal)
         }
@@ -211,6 +262,35 @@ struct ProductDetailCart_Previews: PreviewProvider {
     static var previews: some View {
         ProductDetailCart()
     }
+}
+
+// MARK: - Cart model observable object
+
+class Cart: ObservableObject {
+    @Published var items: [CartItem] = []
+    
+    func add(item: CartItem) {
+        if let index = items.firstIndex(where: { item.title == $0.title }) {
+            // If item already exists, update the quantity
+            items[index].quantity = item.quantity
+        } else {
+            items.append(item)
+        }
+    }
+    
+    func deleteItem(for id: UUID) {
+        if let index = items.firstIndex(where: { $0.id == id }) {
+            items.remove(at: index)
+        }
+    }
+}
+
+struct CartItem: Identifiable {
+    let id = UUID()
+    let thumbnailImageId: String
+    let title: String
+    let price: String
+    var quantity: Int
 }
 
 // MARK: - Modifiers
@@ -226,7 +306,6 @@ fileprivate struct PaginationButtonModifier: ViewModifier {
             .clipShape(Circle())
     }
 }
-
 
 // MARK: - Theme
 
