@@ -43,11 +43,44 @@ struct ExpensesChart: View {
                     Chart {
                         ForEach(SPENDINGS, id: \.day.rawValue) { spending in
                             BarMark(x: .value("day", spending.day.rawValue), y: .value("amount", spending.amount))
+                                .annotation(alignment: .top) {
+                                    if selectedDay == spending.day {
+                                        let amount = spending.amount
+                                        let formatted = amount.formatted(.currency(code: "USD"))
+                                        Text(formatted)
+                                            .font(.caption)
+                                            .foregroundColor(.white)
+                                            .bold()
+                                            .padding(4)
+                                            .background(.primary)
+                                            .cornerRadius(4)
+                                    }
+                                }
                                 .cornerRadius(4)
                                 .foregroundStyle(selectedDay == spending.day ? Theme.cyan : Theme.softRed)
                         }
                     }
                     .frame(minHeight: 250)
+                    .chartOverlay { chart in
+                      GeometryReader { geometry in
+                          Rectangle()
+                              .fill(.clear)
+                              .contentShape(Rectangle())
+                              .onTapGesture { location in
+                                  let origin = geometry[chart.plotAreaFrame].origin
+                                  let position = CGPoint(x: location.x - origin.x, y: location.y - origin.y)
+                                  
+                                  guard let day: String = chart.value(atX: position.x) else { return }
+                                  
+                                  let newSelection = Spending.DayOfWeek(rawValue: day)
+                                  if newSelection != selectedDay {
+                                      selectedDay = newSelection
+                                  } else {
+                                      selectedDay = nil
+                                  }
+                              }
+                      }
+                    }
                     
                     Divider()
                     
