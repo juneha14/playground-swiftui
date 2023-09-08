@@ -8,36 +8,44 @@
 import SwiftUI
 
 struct PostingsFilter: View {
-    let postings = Bundle.main.decode([Posting].self, from: "postings.json")
+    @StateObject private var viewModel = PostingsViewModel()
     
     var body: some View {
         NavigationStack {
             ScrollView {
-                HStack {
-                    Button {
-                        // clear all filters
-                    } label: {
-                        Image(systemName: "xmark.circle")
-                            .foregroundColor(Theme.darkCyan)
-                    }
-
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHGrid(rows: [GridItem(.flexible())]) {
-                            ForEach(0...10, id: \.self) { _ in
-                                FilterPill(title: "Frontend")
+                if !viewModel.filters.isEmpty {
+                    HStack {
+                        Button {
+                            viewModel.clearAllFilters()
+                        } label: {
+                            Image(systemName: "xmark.circle")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                                .foregroundColor(Theme.darkCyan)
+                        }
+                        
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            LazyHGrid(rows: [GridItem(.flexible())]) {
+                                ForEach(viewModel.filters, id: \.self) { filter in
+                                    FilterPill(title: filter, onRemove: {
+                                        viewModel.remove(filter: filter)
+                                    })
+                                }
                             }
                         }
                     }
+                    .padding()
                 }
-                .padding()
-                .padding(.bottom, 15)
                 
                 LazyVGrid(columns: [GridItem(.flexible())]) {
-                    ForEach(postings, id: \.id) { posting in
-                        PostingView(posting: posting)
+                    ForEach(viewModel.postings, id: \.id) { posting in
+                        PostingView(posting: posting, onTagPress: { tag in
+                            viewModel.add(filter: tag)
+                        })
                     }
                 }
                 .padding(.horizontal)
+                .padding(.top, 15)
             }
             .background(Theme.lightGrayCyan)
             .navigationTitle("Postings")
@@ -47,6 +55,7 @@ struct PostingsFilter: View {
 
 struct PostingView: View {
     let posting: Posting
+    let onTagPress: (String) -> Void
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -62,11 +71,11 @@ struct PostingView: View {
             VStack(alignment: .leading) {
                 LabeledContent {
                     if posting.new {
-                        FeaturedPill(title: "New")
+                        Text("New").modifier(PillStyleModifier(pill: .new))
                     }
                     
                     if posting.featured {
-                        FeaturedPill(title: "Featured")
+                        Text("Featured").modifier(PillStyleModifier(pill: .featured))
                     }
                 } label: {
                     Text(posting.company)
@@ -96,12 +105,21 @@ struct PostingView: View {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], alignment: .leading) {
                     let tags = [posting.role, posting.level] + posting.languages + posting.tools
                     ForEach(tags, id: \.self) { tag in
-                        Tag(title: tag)
+                        Button(tag) {
+                            onTagPress(tag)
+                        }
+                        .buttonStyle(TagButtonStyle())
                     }
                 }
             }
             .padding()
             .padding(.top, 20)
+            .overlay(alignment: .leading) {
+                if posting.featured {
+                    Theme.darkCyan
+                        .frame(width: 5)
+                }
+            }
             .background(.white)
             .cornerRadius(8)
             .padding(.bottom, 25)
@@ -111,6 +129,7 @@ struct PostingView: View {
 
 struct FilterPill: View {
     let title: String
+    let onRemove: () -> Void
     
     var body: some View {
         HStack(spacing: 0) {
@@ -118,14 +137,14 @@ struct FilterPill: View {
                 .font(.caption)
                 .foregroundColor(.white)
                 .bold()
-                .padding(.vertical, 4)
+                .padding(.vertical, 8)
                 .padding(.trailing, 8)
             Button {
-                //
+                onRemove()
             } label: {
                 Image(systemName: "xmark")
                     .resizable()
-                    .frame(width: 8, height: 8)
+                    .frame(width: 10, height: 10)
                     .foregroundColor(.white)
             }
         }
@@ -135,11 +154,11 @@ struct FilterPill: View {
     }
 }
 
-struct Tag: View {
-    let title: String
-    
-    var body: some View {
-        Text(title)
+// MARK: - Style Modifiers
+
+struct TagButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
             .font(.caption)
             .foregroundColor(Theme.darkCyan)
             .bold()
@@ -150,26 +169,85 @@ struct Tag: View {
     }
 }
 
-struct FeaturedPill: View {
-    let title: String
+struct PillStyleModifier: ViewModifier {
+    enum Pill {
+        case new, featured
+        
+        var color: Color {
+            switch self {
+            case .new: return Theme.darkCyan
+            case .featured: return .black
+            }
+        }
+    }
     
-    var body: some View {
-        Text(title)
+    let pill: Pill
+    
+    func body(content: Content) -> some View {
+        content
             .font(.caption)
             .bold()
             .foregroundColor(.white)
             .textCase(.uppercase)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .background(title == "New" ? Theme.darkCyan : .black)
+            .background(pill.color)
             .clipShape(Capsule())
-        
     }
 }
 
 struct PostingsFilter_Previews: PreviewProvider {
     static var previews: some View {
         PostingsFilter()
+    }
+}
+
+// MARK: - Helpers
+
+final class PostingsViewModel: ObservableObject {
+    @Published var postings: [Posting] = []
+    @Published var filters: [String] = []
+    
+    private let allPostings: [Posting]
+    private var currentFilters: Set<String> = []
+    
+    init() {
+        let _postings = Bundle.main.decode([Posting].self, from: "postings.json")
+        self.allPostings = _postings
+        self.postings = _postings
+    }
+    
+    func add(filter: String) {
+        let (inserted, _) = currentFilters.insert(filter)
+        guard inserted else { return }
+        
+        // Add to filter array so that the pills can be displayed
+        filters.insert(filter, at: 0)
+      
+        // If we want to have a filter that's not exclusive
+        // postings = allPostings.filter({ $0.allTags.contains(where: { $0 == filter })})
+        
+        // If we want to have a filter that's exclusive
+        postings = allPostings.filter({ posting in
+            currentFilters.isSubset(of: posting.allTags)
+        })
+    }
+    
+    func remove(filter: String) {
+        guard let index = filters.firstIndex(where: { $0 == filter }) else { return }
+        
+        filters.remove(at: index)
+        currentFilters.remove(filter)
+        
+        postings = allPostings.filter({ posting in
+            currentFilters.isSubset(of: posting.allTags)
+        })
+    }
+    
+    func clearAllFilters() {
+        filters = []
+        currentFilters = []
+        postings = allPostings
     }
 }
 
@@ -187,6 +265,10 @@ struct Posting: Codable {
     var location: String
     var languages: [String]
     var tools: [String]
+    
+    var allTags: [String] {
+        return [role, level] + languages + tools
+    }
 }
 
 fileprivate struct Theme {
