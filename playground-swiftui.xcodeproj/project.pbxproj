@@ -11,6 +11,9 @@
 		CD57F0772A95B0D800699E7B /* CardDetailsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD57F0762A95B0D800699E7B /* CardDetailsForm.swift */; };
 		CD57F0792A9D1AD400699E7B /* InteractivePricing.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD57F0782A9D1AD400699E7B /* InteractivePricing.swift */; };
 		CD57F07B2A9FCD7400699E7B /* Splitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD57F07A2A9FCD7400699E7B /* Splitter.swift */; };
+		CD6F7C5E2AAA46C7007A7DD2 /* PostingsFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6F7C5D2AAA46C7007A7DD2 /* PostingsFilter.swift */; };
+		CD6F7C652AAA4BB4007A7DD2 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6F7C642AAA4BB4007A7DD2 /* Helpers.swift */; };
+		CD6F7C672AAA4CF1007A7DD2 /* postings.json in Resources */ = {isa = PBXBuildFile; fileRef = CD6F7C662AAA4CF1007A7DD2 /* postings.json */; };
 		CDABA0602A7D818200DD4C30 /* playground_swiftuiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA05F2A7D818200DD4C30 /* playground_swiftuiApp.swift */; };
 		CDABA0622A7D818200DD4C30 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDABA0612A7D818200DD4C30 /* ContentView.swift */; };
 		CDABA0642A7D818400DD4C30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDABA0632A7D818400DD4C30 /* Assets.xcassets */; };
@@ -44,6 +47,9 @@
 		CD57F0762A95B0D800699E7B /* CardDetailsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetailsForm.swift; sourceTree = "<group>"; };
 		CD57F0782A9D1AD400699E7B /* InteractivePricing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePricing.swift; sourceTree = "<group>"; };
 		CD57F07A2A9FCD7400699E7B /* Splitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Splitter.swift; sourceTree = "<group>"; };
+		CD6F7C5D2AAA46C7007A7DD2 /* PostingsFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostingsFilter.swift; sourceTree = "<group>"; };
+		CD6F7C642AAA4BB4007A7DD2 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		CD6F7C662AAA4CF1007A7DD2 /* postings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = postings.json; sourceTree = "<group>"; };
 		CDABA05C2A7D818200DD4C30 /* playground-swiftui.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "playground-swiftui.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDABA05F2A7D818200DD4C30 /* playground_swiftuiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = playground_swiftuiApp.swift; sourceTree = "<group>"; };
 		CDABA0612A7D818200DD4C30 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -83,6 +89,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CD6F7C5F2AAA4B12007A7DD2 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				CD6F7C662AAA4CF1007A7DD2 /* postings.json */,
+				CD6F7C642AAA4BB4007A7DD2 /* Helpers.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		CDABA0532A7D818200DD4C30 = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +119,7 @@
 		CDABA05E2A7D818200DD4C30 /* playground-swiftui */ = {
 			isa = PBXGroup;
 			children = (
+				CD6F7C5F2AAA4B12007A7DD2 /* Helpers */,
 				CDABA0892A7DB6B300DD4C30 /* Views */,
 				CDABA05F2A7D818200DD4C30 /* playground_swiftuiApp.swift */,
 				CDABA0612A7D818200DD4C30 /* ContentView.swift */,
@@ -133,6 +149,7 @@
 				CD57F07A2A9FCD7400699E7B /* Splitter.swift */,
 				CDB332762AA2D95700E34031 /* ProductDetailCart.swift */,
 				CD3F50422AA8F3C7007C70AD /* ExpensesChart.swift */,
+				CD6F7C5D2AAA46C7007A7DD2 /* PostingsFilter.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -241,6 +258,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD6F7C672AAA4CF1007A7DD2 /* postings.json in Resources */,
 				CDABA0672A7D818400DD4C30 /* Preview Assets.xcassets in Resources */,
 				CDABA0642A7D818400DD4C30 /* Assets.xcassets in Resources */,
 			);
@@ -275,7 +293,9 @@
 				CDABA0622A7D818200DD4C30 /* ContentView.swift in Sources */,
 				CD57F0772A95B0D800699E7B /* CardDetailsForm.swift in Sources */,
 				CD57F0792A9D1AD400699E7B /* InteractivePricing.swift in Sources */,
+				CD6F7C5E2AAA46C7007A7DD2 /* PostingsFilter.swift in Sources */,
 				CDABA0602A7D818200DD4C30 /* playground_swiftuiApp.swift in Sources */,
+				CD6F7C652AAA4BB4007A7DD2 /* Helpers.swift in Sources */,
 				CD57F07B2A9FCD7400699E7B /* Splitter.swift in Sources */,
 				CDABA0942A94434800DD4C30 /* NotificationsView.swift in Sources */,
 			);
